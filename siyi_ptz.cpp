@@ -185,22 +185,22 @@ config->UseCount = 3;
 
     
     config->DefaultAbsolutePantTiltPositionSpace = soap_new_std__string(soap, -1);
-    *(config->DefaultAbsolutePantTiltPositionSpace) = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/PositionGenericSpace";
+    *(config->DefaultAbsolutePantTiltPositionSpace) = "http://www.onvif.org/ver20/tptz/PanTiltSpaces/PositionGenericSpace";
 
     config->DefaultAbsoluteZoomPositionSpace = soap_new_std__string(soap, -1);
-    *(config->DefaultAbsoluteZoomPositionSpace) = "http://www.onvif.org/ver10/tptz/ZoomSpaces/PositionGenericSpace";
+    *(config->DefaultAbsoluteZoomPositionSpace) = "http://www.onvif.org/ver20/tptz/ZoomSpaces/PositionGenericSpace";
 
     config->DefaultContinuousPanTiltVelocitySpace = soap_new_std__string(soap, -1);
-    *(config->DefaultContinuousPanTiltVelocitySpace) = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/VelocityGenericSpace";
+    *(config->DefaultContinuousPanTiltVelocitySpace) = "http://www.onvif.org/ver20/tptz/PanTiltSpaces/VelocityGenericSpace";
 
     config->DefaultContinuousZoomVelocitySpace = soap_new_std__string(soap, -1);
-    *(config->DefaultContinuousZoomVelocitySpace) = "http://www.onvif.org/ver10/tptz/ZoomSpaces/VelocityGenericSpace";
+    *(config->DefaultContinuousZoomVelocitySpace) = "http://www.onvif.org/ver20/tptz/ZoomSpaces/VelocityGenericSpace";
 
     config->DefaultRelativePanTiltTranslationSpace = soap_new_std__string(soap, -1);
-    *(config->DefaultRelativePanTiltTranslationSpace) = "http://www.onvif.org/ver10/tptz/PanTiltSpaces/TranslationGenericSpace";
+    *(config->DefaultRelativePanTiltTranslationSpace) = "http://www.onvif.org/ver20/tptz/PanTiltSpaces/TranslationGenericSpace";
 
     config->DefaultRelativeZoomTranslationSpace = soap_new_std__string(soap, -1);
-    *(config->DefaultRelativeZoomTranslationSpace) = "http://www.onvif.org/ver10/tptz/ZoomSpaces/TranslationGenericSpace";
+    *(config->DefaultRelativeZoomTranslationSpace) = "http://www.onvif.org/ver20/tptz/ZoomSpaces/TranslationGenericSpace";
 
     // Add PTZ Configuration to the Response
     tptz__GetConfigurationsResponse.PTZConfiguration.push_back(config);
