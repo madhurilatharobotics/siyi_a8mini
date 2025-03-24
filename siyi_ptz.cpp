@@ -24,45 +24,85 @@ SOAP_FMAC5 int SOAP_FMAC6 __tptz__GetServiceCapabilities(struct soap *soap,
 }
 
 
-SOAP_FMAC5 int __tptz__GetNodes(struct soap *soap,
+SOAP_FMAC5 int SOAP_FMAC6 __tptz__GetNodes(struct soap *soap,
+
     struct _tptz__GetNodes *_tptz__GetNodes,
+
     struct _tptz__GetNodesResponse &_tptz__GetNodesResponse)
+
 {
+
     auto *ptzNode = soap_new_tt__PTZNode(soap, -1);
-    ptzNode->Name = soap_new_std__string(soap, -1);  // Allocate memory
+
+    ptzNode->Name = soap_new_std__string(soap, -1);
+
     if (ptzNode->Name) {  
-        *(ptzNode->Name) = "PTZNode_Channel1";  // Assign value
+
+        *(ptzNode->Name) = "PTZNode_Channel1";
+
     }
-ptzNode->token = "00000";   
+ 
+    ptzNode->token = "PTZNode1";  // Use a valid token
+ 
+    ptzNode->HomeSupported = true;
 
-ptzNode->HomeSupported = true;
+    ptzNode->MaximumNumberOfPresets = 300;
+ 
+    ptzNode->AuxiliaryCommands.push_back("IRLampOn");
 
-
-ptzNode->MaximumNumberOfPresets = 300;
-
-ptzNode->AuxiliaryCommands.push_back("IRLampOn");
-ptzNode->AuxiliaryCommands.push_back("IRLampOff");
+    ptzNode->AuxiliaryCommands.push_back("IRLampOff");
+ 
+    // Allocate PTZ spaces
 
     auto *space = soap_new_tt__PTZSpaces(soap, -1);
-    auto *zoomSpace = soap_new_tt__Space1DDescription(soap, -1);
-    auto *panTiltSpace = soap_new_tt__Space2DDescription(soap, -1);
-    space->AbsolutePanTiltPositionSpace.push_back(soap_new_tt__Space2DDescription(soap, -1));
 
+    // Pan-Tilt Absolute Space
+
+    auto *panTiltSpace = soap_new_tt__Space2DDescription(soap, -1);
 
     panTiltSpace->URI = soap_strdup(soap, "http://www.onvif.org/ver20/tptz/PanTiltSpaces/PositionGenericSpace");
-space->AbsolutePanTiltPositionSpace.push_back(panTiltSpace);
 
+    panTiltSpace->XRange = soap_new_tt__FloatRange(soap, -1);
 
-    space->AbsoluteZoomPositionSpace.push_back(soap_new_tt__Space1DDescription(soap, -1));
+    panTiltSpace->XRange->Min = -1.0;
+
+    panTiltSpace->XRange->Max = 1.0;
+
+    panTiltSpace->YRange = soap_new_tt__FloatRange(soap, -1);
+
+    panTiltSpace->YRange->Min = -1.0;
+
+    panTiltSpace->YRange->Max = 1.0;
+
+    space->AbsolutePanTiltPositionSpace.push_back(panTiltSpace);
+ 
+    // Zoom Absolute Space
+
+    auto *zoomSpace = soap_new_tt__Space1DDescription(soap, -1);
 
     zoomSpace->URI = soap_strdup(soap, "http://www.onvif.org/ver20/tptz/ZoomSpaces/PositionGenericSpace");
-    space->AbsoluteZoomPositionSpace.push_back(zoomSpace);
 
+    zoomSpace->XRange = soap_new_tt__FloatRange(soap, -1);
+
+    zoomSpace->XRange->Min = 0.0;
+
+    zoomSpace->XRange->Max = 10.0;
+
+    space->AbsoluteZoomPositionSpace.push_back(zoomSpace);
+ 
+    // Assign spaces to PTZ node
+
+    ptzNode->SupportedPTZSpaces = space;
+ 
+    // Add to response
 
     _tptz__GetNodesResponse.PTZNode.push_back(ptzNode);
-    
+ 
     return SOAP_OK;
+
 }
+
+ 
 
 
 SOAP_FMAC5 int  __tptz__GetNode(struct soap *soap,
@@ -383,7 +423,6 @@ SOAP_FMAC5 int  __tptz__ContinuousMove(struct soap *soap,
         }
     }
 
-
     return SOAP_OK;
 }
 
@@ -453,20 +492,20 @@ SOAP_FMAC5 int   __tptz__MoveAndStartTracking(
     return SOAP_OK;
 }
 
-SOAP_FMAC5 int  __tptz__GetStatus(struct soap *soap,
-    struct _tptz__GetStatus *req,
-   struct _tptz__GetStatusResponse &tptz__GetStatusResponse)
+SOAP_FMAC5 int SOAP_FMAC6 __tptz__GetStatus(struct soap *soap,
+    struct _tptz__GetStatus *tptz__GetStatus,
+    struct _tptz__GetStatusResponse &tptz__GetStatusResponse)
 {
-    std::cout << "Function name: " << __func__ << std::endl;
-    tptz__GetStatusResponse.PTZStatus = soap_new_tt__PTZStatus(soap, -1);
-    tptz__GetStatusResponse.PTZStatus->Position = soap_new_tt__PTZVector(soap, -1);
-    
-    tptz__GetStatusResponse.PTZStatus->Position->PanTilt = soap_new_tt__Vector2D(soap, -1);
-    tptz__GetStatusResponse.PTZStatus->Position->PanTilt->x = 0.0;
-    tptz__GetStatusResponse.PTZStatus->Position->PanTilt->y = 0.0;
-
-    tptz__GetStatusResponse.PTZStatus->Position->Zoom = soap_new_tt__Vector1D(soap, -1);
-    tptz__GetStatusResponse.PTZStatus->Position->Zoom->x = 0.0;
+    auto *status = soap_new_tt__PTZStatus(soap, -1);
+    status->Position = soap_new_tt__PTZVector(soap, -1);
+    status->Position->PanTilt = soap_new_tt__Vector2D(soap, -1);
+    status->Position->PanTilt->x = 0.0;  // Default position
+    status->Position->PanTilt->y = 0.0;
+    status->Position->Zoom = soap_new_tt__Vector1D(soap, -1);
+    status->Position->Zoom->x = 1.0;  // Default zoom
+ 
+    tptz__GetStatusResponse.PTZStatus = status;
+ 
     return SOAP_OK;
 }
 
@@ -550,3 +589,4 @@ SOAP_FMAC5 int  __tptz__GetCompatibleConfigurations(struct soap *soap,
     std::cout << "Function name: " << __func__ << std::endl;
     return SOAP_OK;
 }
+
